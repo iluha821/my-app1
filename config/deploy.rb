@@ -2,7 +2,7 @@
 lock "3.8.2"
 
 # Change these
-server 'your_server_ip', port: your_port_num, roles: [:web, :app, :db], primary: true
+server 'localhost', port: 22, roles: [:web, :app, :db], primary: true
 
 set :application, "my_app1"
 set :repo_url, "git@github.com:iluha821/my-app1.git"
