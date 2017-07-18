@@ -2,7 +2,7 @@
 lock "3.8.2"
 
 # Change these
-server 'localhost', port: 22, roles: [:web, :app, :db], primary: true
+server 'localhost', user: 'root', port: 22, roles: [:web, :app, :db], primary: true
 
 set :application, "my_app1"
 set :repo_url, "git@github.com:iluha821/my-app1.git"
@@ -16,11 +16,11 @@ set :repo_url, "git@github.com:iluha821/my-app1.git"
 
 # Don't change these unless you know what you're doing
 set :pty,             true
-set :use_sudo,        false
+set :use_sudo,        true
 set :stage,           :production
 set :deploy_via,      :remote_cache
 set :deploy_to,       "/opt/#{fetch(:application)}"
-set :puma_bind,       "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock"
+set :puma_bind,       %w(tcp://0.0.0.0:3000 unix:#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock)
 set :puma_state,      "#{shared_path}/tmp/pids/puma.state"
 set :puma_pid,        "#{shared_path}/tmp/pids/puma.pid"
 set :puma_access_log, "#{release_path}/log/puma.error.log"
@@ -50,7 +50,7 @@ namespace :puma do
     end
   end
 
-  #before :deploy, :make_dirs
+  before :start, :make_dirs
 end
 
 namespace :deploy do
@@ -76,6 +76,7 @@ namespace :deploy do
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
+      Rake::Task['puma:restart'].reenable
       invoke 'puma:restart'
     end
   end
