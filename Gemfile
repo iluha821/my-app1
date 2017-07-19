@@ -39,6 +39,9 @@ group :development, :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '~> 2.13'
   gem 'selenium-webdriver'
+  gem 'ci_reporter'
+  gem 'ci_reporter_rspec'
+  gem "brakeman", :require => false
 end
 
 group :development do
