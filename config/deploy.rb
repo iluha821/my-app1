@@ -47,6 +47,7 @@ namespace :puma do
     on roles(:app) do
       execute "mkdir #{shared_path}/tmp/sockets -p"
       execute "mkdir #{shared_path}/tmp/pids -p"
+      execute "cd #{fetch(:deploy_to)}/current"
     end
   end
 
